@@ -101,7 +101,7 @@ void reset_chip() {
   Serial.write(0x00);  // Message Length
 }
 
-void read_data(uint32_t address, uint16_t size) {
+void read_data(uint32_t address, uint8_t size) {
   set_data_in();
 
   uint8_t data[size];
@@ -116,11 +116,11 @@ void read_data(uint32_t address, uint16_t size) {
 
 void loop() {
   int available = Serial.available();
-  if (available > 2) {
-    uint8_t pre_buffer[3] = {};
-    Serial.readBytes(pre_buffer, 3);
+  if (available > 1) {
+    uint8_t pre_buffer[2] = {};
+    Serial.readBytes(pre_buffer, 2);
     uint8_t message_type = pre_buffer[0];
-    uint16_t message_length = (pre_buffer[1] << 8) | pre_buffer[2];
+    uint16_t message_length = pre_buffer[1];
 
     uint8_t buffer[message_length] = {};
     Serial.readBytes(buffer, message_length);
@@ -151,12 +151,12 @@ void loop() {
     } else if (message_type == 0x01) {  // Ident
       read_ident();
 
-    } else if (message_type == 0x02) {  // Ident
+    } else if (message_type == 0x02) {  // Reset
       reset_chip();
 
-    } else if (message_type == 0x03) {  // Read Byte
+    } else if (message_type == 0x03) {  // Read Data
       uint32_t address = (buffer[0] << 32) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3];
-      uint16_t size = (buffer[4] << 8) | buffer[5];
+      uint8_t size = buffer[4];
       read_data(address, size);
     }
   }
