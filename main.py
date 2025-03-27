@@ -1,10 +1,12 @@
 import sys
 import time
 import uuid
+
 import serial
 import serial.tools.list_ports
 
 CHIP_SIZE = 0x80000
+CHUNK_SIZE = 32
 
 
 class Main:
@@ -37,10 +39,6 @@ class Main:
         self.execute_command(0x00)
         sys.stdout.write("Done\n\n")
 
-        sys.stdout.write("Resetting... ")
-        self.execute_command(0x02)
-        sys.stdout.write("Done\n\n")
-
         self.read_ident()
         self.data = self.read(0, CHIP_SIZE)
         self.save()
@@ -48,15 +46,14 @@ class Main:
         sys.stdout.write("\nFinished\n")
 
     def execute_command(self, command, *args):
-        length = int(len(args)).to_bytes(2)
-
-        data = [command, length[0], length[1]]
+        data = [command, int(len(args))]
         data.extend(args)
 
         self.ser.write(bytearray(data))
-        message_start = self.ser.read(3)
+        message_start = self.ser.read(2)
+
         message_type = message_start[0]
-        message_length = (message_start[1] << 8) | message_start[2]
+        message_length = message_start[1]
 
         if message_type != command:
             return None
@@ -77,7 +74,7 @@ class Main:
         manufacturer_id = ident[0]
         device_id = ident[1]
 
-        sys.stdout.write(f"Manufacturer ID: {manufacturer_id:02X}\n")
+        sys.stdout.write(f"Manufacturer ID: 0x{manufacturer_id:02X}\n")
         sys.stdout.write(f"Device ID: 0x{device_id:02X}\n\n")
 
         if manufacturer_id != 0x01:
@@ -92,9 +89,10 @@ class Main:
         data = bytearray()
         got_some_data = False
 
-        for address_big in range(start, size + start, 8):
+        for address_big in range(start, size + start, CHUNK_SIZE):
             address = int(address_big).to_bytes(4)
-            result = self.execute_command(0x03, address[0], address[1], address[2], address[3], 8)
+
+            result = self.execute_command(0x02, address[0], address[1], address[2], address[3], CHUNK_SIZE)
             data += result
 
             if not got_some_data:

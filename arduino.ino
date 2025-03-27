@@ -77,6 +77,8 @@ void read_ident() {
   set_data_in();
   uint8_t manufacturer_id = read_byte(0x0);
 
+  reset_chip();
+
    // Read device id
   set_data_out();
   write_byte(0xaa, 0xaaa);
@@ -85,6 +87,8 @@ void read_ident() {
   delay(100);
   set_data_in();
   uint8_t device_id = read_byte(0x2);
+
+  reset_chip();
 
   Serial.write(0x01);  // Message Type
   Serial.write(0x02);  // Message Length
@@ -96,9 +100,6 @@ void reset_chip() {
   digitalWrite(RESET_PIN, LOW);
   delay(1);
   digitalWrite(RESET_PIN, HIGH);
-
-  Serial.write(0x02);  // Message Type
-  Serial.write(0x00);  // Message Length
 }
 
 void read_data(uint32_t address, uint8_t size) {
@@ -106,10 +107,10 @@ void read_data(uint32_t address, uint8_t size) {
 
   uint8_t data[size];
   for (uint8_t i = 0; i < size; i++) {
-    data[i] = read_byte(address + size);
+    data[i] = read_byte(address + i);
   }
   
-  Serial.write(0x03);  // Message Type
+  Serial.write(0x02);  // Message Type
   Serial.write(size);  // Message Length
   Serial.write(data, size);
 }
@@ -145,17 +146,19 @@ void loop() {
       digitalWrite(CE_PIN, LOW);
       digitalWrite(BYTE_PIN, LOW);
 
+      reset_chip();
+
       Serial.write(0x00);  // Message Type
       Serial.write(0x00);  // Message Length
 
     } else if (message_type == 0x01) {  // Ident
       read_ident();
 
-    } else if (message_type == 0x02) {  // Reset
-      reset_chip();
-
-    } else if (message_type == 0x03) {  // Read Data
-      uint32_t address = (buffer[0] << 32) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3];
+    } else if (message_type == 0x02) {  // Read Data
+      uint32_t address = ((uint32_t)(uint8_t)buffer[0] << 24) |
+                   ((uint32_t)(uint8_t)buffer[1] << 16) |
+                   ((uint32_t)(uint8_t)buffer[2] << 8)  |
+                   ((uint32_t)(uint8_t)buffer[3]);
       uint8_t size = buffer[4];
       read_data(address, size);
     }
