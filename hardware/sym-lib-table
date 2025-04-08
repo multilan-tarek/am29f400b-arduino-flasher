@@ -1,0 +1,5 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "Am29F400B")(type "KiCad")(uri "${KIPRJMOD}/Am29F400B.kicad_sym")(options "")(descr ""))
+  (lib (name "MEGA_Port")(type "KiCad")(uri "${KIPRJMOD}/MEGA_Port.kicad_sym")(options "")(descr ""))
+)
