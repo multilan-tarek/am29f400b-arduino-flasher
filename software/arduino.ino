@@ -1,10 +1,10 @@
-static const uint8_t ADDRESS_PINS[] = {22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 53, 51, 49};  // A-1 (Bit 0) - A17 (Bit 18) (A-1 is the LSB in byte mode)
-static const uint8_t DATA_PINS[] = {23, 25, 27, 29, 31, 33, 35, 37};                                                 // DQ0 - DQ7 (only 8 bits are used in byte mode)
-static const uint8_t RESET_PIN = 3;
-static const uint8_t WE_PIN = 4;
-static const uint8_t OE_PIN = 5;
-static const uint8_t CE_PIN = 6;
-static const uint8_t BYTE_PIN = 7;
+static const uint8_t ADDRESS_PINS[] = {26, 46, 47, 44, 39, 38, 41, 40, 43, 33, 34, 35, 36, 37, 30, 29, 28, 27, 42};  // A-1 (Bit 0) - A17 (Bit 18) (A-1 is the LSB in byte mode)
+static const uint8_t DATA_PINS[] = {51, 50, 53, 52, 22, 23, 24, 25};                                                  // DQ0 - DQ7 (only 8 bits are used in byte mode)
+static const uint8_t RESET_PIN = 31;
+static const uint8_t WE_PIN = 32;
+static const uint8_t OE_PIN = 48;
+static const uint8_t CE_PIN = 49;
+static const uint8_t RY_BY_PIN = 45;
 
 void set_data(uint8_t data) {
   for (int i = 0; i < 8; i++) {
@@ -121,7 +121,7 @@ void loop() {
     uint8_t pre_buffer[2] = {};
     Serial.readBytes(pre_buffer, 2);
     uint8_t message_type = pre_buffer[0];
-    uint16_t message_length = pre_buffer[1];
+    uint8_t message_length = pre_buffer[1];
 
     uint8_t buffer[message_length] = {};
     Serial.readBytes(buffer, message_length);
@@ -138,13 +138,12 @@ void loop() {
       pinMode(WE_PIN, OUTPUT);
       pinMode(OE_PIN, OUTPUT);
       pinMode(CE_PIN, OUTPUT);
-      pinMode(BYTE_PIN, OUTPUT);
+      pinMode(RY_BY_PIN, INPUT);
 
       digitalWrite(RESET_PIN, HIGH);
       digitalWrite(WE_PIN, HIGH);
       digitalWrite(OE_PIN, HIGH);
       digitalWrite(CE_PIN, LOW);
-      digitalWrite(BYTE_PIN, LOW);
 
       reset_chip();
 
