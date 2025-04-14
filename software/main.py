@@ -338,7 +338,7 @@ class Main:
 
         sectors = device_layout
         if sector is not None:
-            sectors = device_layout[sector]
+            sectors = [device_layout[sector]]
 
         for address_int in sectors:
             address = int(address_int).to_bytes(4)
