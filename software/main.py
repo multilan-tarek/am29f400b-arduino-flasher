@@ -45,7 +45,7 @@ SECTORS = {
 
 class Main:
     def __init__(self):
-        sys.stdout.write("AMD AM29F400B Arduino Flasher\n")
+        sys.stdout.write("AMD Am29F400B Arduino Flasher\n")
         sys.stdout.write("(C) 2025 Tarek Poltermann - https://multilan.de\n\n")
 
         command, file, start, size, sector = self.parse_command()
@@ -270,8 +270,16 @@ class Main:
         manufacturer_id = ident[0]
         device_id = ident[1]
 
+        device_name = "Unknown"
+
+        if device_id == 0x23:
+            device_name = "Am29F400BT"
+
+        elif device_id == 0xab:
+            device_name= "Am29F400BB"
+
         sys.stdout.write(f"Manufacturer ID: 0x{manufacturer_id:02X}\n")
-        sys.stdout.write(f"Device ID: 0x{device_id:02X}\n\n")
+        sys.stdout.write(f"Device ID: 0x{device_id:02X} ({device_name})\n\n")
 
         if manufacturer_id != 0x01:
             sys.stdout.write("Expected 0x01 for manufacturer ID!\n")
