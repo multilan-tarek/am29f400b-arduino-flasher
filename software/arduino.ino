@@ -156,6 +156,24 @@ void write_data(uint32_t address, uint8_t size, uint8_t data[]) {
   Serial.write(0x00);  // Message Length
 }
 
+void check_sector_protection(uint32_t address) {
+  set_data_out();
+  write_byte(0xaa, 0xaaa);
+  write_byte(0x55, 0x555);
+  write_byte(0x90, 0xaaa);
+  delayMicroseconds(10);
+
+  set_data_in();
+  uint8_t result = read_byte(0x4);
+
+  reset_chip();
+  delayMicroseconds(10);
+
+  Serial.write(0x05);  // Message Type
+  Serial.write(0x01);  // Message Length
+  Serial.write(result);
+}
+
 void loop() {
   int available = Serial.available();
   if (available > 1) {
@@ -209,6 +227,10 @@ void loop() {
       uint8_t data[size] = {};
       memcpy(data, &buffer[5], sizeof(data));
       write_data(address, size, data);
+
+    } else if (message_type == 0x05) {
+      uint32_t address = ((uint32_t)(uint8_t)buffer[0] << 24) | ((uint32_t)(uint8_t)buffer[1] << 16) | ((uint32_t)(uint8_t)buffer[2] << 8) | ((uint32_t)(uint8_t)buffer[3]); 
+      check_sector_protection(address);
     }
   }
 }
