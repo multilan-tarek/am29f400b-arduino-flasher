@@ -147,7 +147,7 @@ class Main:
             pass
 
         else:
-            sys.stdout.write(f"Unknown Command: '{" ".join(sys.argv[1:])}'\n\n")
+            sys.stdout.write(f"Unknown command: '{" ".join(sys.argv[1:])}'\n\n")
             self.print_help()
             exit()
 
@@ -164,7 +164,7 @@ class Main:
         sys.stdout.write(f"-w <file> <sector>{'\t' * 3}| Write sector\n")
         sys.stdout.write(f"-e{'\t' * 7}| Erase full\n")
         sys.stdout.write(f"-e <sector>{'\t' * 5}| Erase sector\n")
-        sys.stdout.write(f"-v{'\t' * 7}| Lists Sector Protection States\n")
+        sys.stdout.write(f"-v{'\t' * 7}| Prints sector protection states\n")
 
     @staticmethod
     def validate_start_size(start, size):
@@ -358,7 +358,7 @@ class Main:
     def print_sector_protection_list(self, device_layout):
         sectors = device_layout
 
-        sys.stdout.write("Sector Protection States:\n")
+        sys.stdout.write("Sector protection states:\n")
         for i, address in enumerate(sectors):
             state = 'Protected' if self.is_sector_protected(address) else 'Unprotected'
             sys.stdout.write(f"SA{i}: {state}\n")
