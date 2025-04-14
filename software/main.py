@@ -1,8 +1,6 @@
 import os
 import sys
 import time
-from os import fdopen
-
 import serial
 import serial.tools.list_ports
 
