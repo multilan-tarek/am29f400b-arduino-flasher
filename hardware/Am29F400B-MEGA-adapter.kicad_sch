@@ -840,6 +840,127 @@
 				)
 			)
 		)
+		(symbol "Device:R"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "R"
+				(at 2.032 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "R"
+				(at 0 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at -1.778 0 90)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "R res resistor"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "R_0_1"
+				(rectangle
+					(start -1.016 -2.54)
+					(end 1.016 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "MEGA_Port:MEGA_Port"
 			(exclude_from_sim no)
 			(in_bom yes)
@@ -1767,6 +1888,12 @@
 		)
 	)
 	(junction
+		(at 99.06 138.43)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "3b446d91-16a5-47c9-962e-dd08be46c0df")
+	)
+	(junction
 		(at 165.1 138.43)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1813,6 +1940,16 @@
 			(type default)
 		)
 		(uuid "0504375d-d43f-499c-8621-502796d58710")
+	)
+	(wire
+		(pts
+			(xy 99.06 148.59) (xy 99.06 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "10cb5f7a-37e3-4d3c-9b1c-71df8804029b")
 	)
 	(wire
 		(pts
@@ -1863,6 +2000,26 @@
 			(type default)
 		)
 		(uuid "297748b7-9ed6-4bf9-9093-32cc2fb56cba")
+	)
+	(wire
+		(pts
+			(xy 99.06 151.13) (xy 110.49 151.13)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2f875098-ec51-4666-809b-d1517cfd4563")
+	)
+	(wire
+		(pts
+			(xy 99.06 138.43) (xy 116.84 138.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2fecaf4f-1216-435c-bb55-623b6368ab50")
 	)
 	(wire
 		(pts
@@ -2076,6 +2233,16 @@
 	)
 	(wire
 		(pts
+			(xy 99.06 138.43) (xy 99.06 140.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9b54decd-996b-4997-a4f1-7dbf2b52973f")
+	)
+	(wire
+		(pts
 			(xy 66.04 113.03) (xy 116.84 113.03)
 		)
 		(stroke
@@ -2096,6 +2263,16 @@
 	)
 	(wire
 		(pts
+			(xy 110.49 151.13) (xy 110.49 148.59)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b0a5ac86-9953-4537-8f46-109c37518dc7")
+	)
+	(wire
+		(pts
 			(xy 66.04 95.25) (xy 116.84 95.25)
 		)
 		(stroke
@@ -2106,7 +2283,7 @@
 	)
 	(wire
 		(pts
-			(xy 66.04 138.43) (xy 116.84 138.43)
+			(xy 66.04 138.43) (xy 99.06 138.43)
 		)
 		(stroke
 			(width 0)
@@ -2223,6 +2400,76 @@
 			(type default)
 		)
 		(uuid "fbeb6a65-91d8-4944-bf45-08315e630ccb")
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 99.06 144.78 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "00d7b5fa-7e54-4c3f-b43a-934278ab15bc")
+		(property "Reference" "R1"
+			(at 101.6 143.5099 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "1K"
+			(at 101.6 146.0499 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_1206_3216Metric_Pad1.30x1.75mm_HandSolder"
+			(at 97.282 144.78 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 99.06 144.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 99.06 144.78 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e9e7a890-2b94-4846-993a-f7d111c2e056")
+		)
+		(pin "2"
+			(uuid "23bf4e35-194c-4cd0-92a6-b08f13a3a01f")
+		)
+		(instances
+			(project ""
+				(path "/3e8f9b42-10dd-4499-a5fc-1b8209647ea1"
+					(reference "R1")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "power:+5V")
@@ -2845,6 +3092,72 @@
 			(project ""
 				(path "/3e8f9b42-10dd-4499-a5fc-1b8209647ea1"
 					(reference "#PWR02")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+5V")
+		(at 110.49 148.59 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e8c7d7a5-605e-487d-920b-fb2f52bcd13a")
+		(property "Reference" "#PWR05"
+			(at 110.49 152.4 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "+5V"
+			(at 110.49 143.51 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 110.49 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 110.49 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 110.49 148.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "0eb83d0d-830d-42c5-afe7-a4a60805dd1b")
+		)
+		(instances
+			(project "Am29F400B-MEGA-adapter"
+				(path "/3e8f9b42-10dd-4499-a5fc-1b8209647ea1"
+					(reference "#PWR05")
 					(unit 1)
 				)
 			)
