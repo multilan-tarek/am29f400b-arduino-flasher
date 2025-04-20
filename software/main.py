@@ -154,15 +154,16 @@ class Main:
     @staticmethod
     def print_help():
         sys.stdout.write("Available commands:\n")
-        sys.stdout.write(f"-r <file>{'\t' * 5}| Read full\n")
-        sys.stdout.write(f"-r <file> <start> <size>\t| Read partial\n")
-        sys.stdout.write(f"-r <file> <sector>{'\t' * 3}| Read sector\n")
-        sys.stdout.write(f"-w <file>{'\t' * 5}| Write full\n")
-        sys.stdout.write(f"-w <file> <start> <size>\t| Write partial (without erasing)\n")
-        sys.stdout.write(f"-w <file> <sector>{'\t' * 3}| Write sector\n")
-        sys.stdout.write(f"-e{'\t' * 7}| Erase full\n")
-        sys.stdout.write(f"-e <sector>{'\t' * 5}| Erase sector\n")
-        sys.stdout.write(f"-v{'\t' * 7}| Prints sector protection states\n")
+        sys.stdout.write("""-r <file>                   | Read full
+-r <file> <start> <size>    | Read partial
+-r <file> <sector>          | Read sector
+-w <file>                   | Write full
+-w <file> <start> <size>    | Write partial (without erasing)
+-w <file> <sector>          | Write sector
+-e                          | Erase full
+-e <sector>                 | Erase sector
+-v                          | Prints sector protection states
+""")
 
     @staticmethod
     def validate_start_size(start, size):
@@ -344,7 +345,7 @@ class Main:
             address = int(address_int).to_bytes(4)
 
             if self.is_sector_protected(address_int):
-               found_protected_sectors = True
+                found_protected_sectors = True
 
             sys.stdout.write(f"\rErasing... 0x{address_int:05X}")
             self.execute_command(0x03, address[0], address[1], address[2], address[3])
