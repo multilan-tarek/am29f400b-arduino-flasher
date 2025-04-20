@@ -123,7 +123,7 @@ Sizes and addresses of these sectors are dependent on the variant.
 Hardware and software is designed to operate in *byte mode*.  
 Values would differ in *word mode*.
 
-### Am29F400TT
+### Am29F400BT
 
 | Sector | Address | Size    |
 |--------|---------|---------|
@@ -139,7 +139,7 @@ Values would differ in *word mode*.
 | SA9    | 0x7a000 | 0x2000  |
 | SA10   | 0x7c000 | 0x4000  |
 
-### Am29F400BT
+### Am29F400BB
 
 | Sector | Address | Size    |
 |--------|---------|---------|
