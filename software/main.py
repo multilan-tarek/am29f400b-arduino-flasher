@@ -13,30 +13,30 @@ CHIP_SIZE = 0x80000
 # Sector layouts for T and B variants
 SECTORS = {
     0x23: [
-        0x00000,
-        0x10000,
-        0x20000,
-        0x30000,
-        0x40000,
-        0x50000,
-        0x60000,
-        0x70000,
-        0x78000,
-        0x7a000,
-        0x7c000
+        [0x00000, 0x10000],
+        [0x10000, 0x10000],
+        [0x20000, 0x10000],
+        [0x30000, 0x10000],
+        [0x40000, 0x10000],
+        [0x50000, 0x10000],
+        [0x60000, 0x10000],
+        [0x70000, 0x8000],
+        [0x78000, 0x2000],
+        [0x7a000, 0x2000],
+        [0x7c000, 0x4000]
     ],
     0xab: [
-        0x00000,
-        0x04000,
-        0x06000,
-        0x08000,
-        0x10000,
-        0x20000,
-        0x30000,
-        0x40000,
-        0x50000,
-        0x60000,
-        0x70000
+        [0x00000, 0x4000],
+        [0x04000, 0x2000],
+        [0x06000, 0x2000],
+        [0x08000, 0x8000],
+        [0x10000, 0x10000],
+        [0x20000, 0x10000],
+        [0x30000, 0x10000],
+        [0x40000, 0x10000],
+        [0x50000, 0x10000],
+        [0x60000, 0x10000],
+        [0x70000, 0x10000]
     ]
 }
 
@@ -73,8 +73,8 @@ class Main:
         elif command == "-w":
             # Check if filesize matches with the area we want to write
             # Can only be done after device ident, because we have to know which variant the flash is
-            if file and os.path.getsize(file) != size:
-                sys.stdout.write(f"Filesize must be {size} bytes!\n")
+            if file and os.path.getsize(file) != (size or CHIP_SIZE):
+                sys.stdout.write(f"Filesize must be {size or CHIP_SIZE} bytes!\n")
                 exit()
 
             confirmation = input(f"The contents of '{file}' are about to be written to the flash. Confirm [y/N]: ")
@@ -139,9 +139,9 @@ class Main:
                 start, size = self.validate_start_size(sys.argv[3], sys.argv[4])
 
         elif command == "-e" and args_length == 3:
-            sector = self.validate_sector(sys.argv[3])
+            sector = self.validate_sector(sys.argv[2])
 
-        elif command == "-v":
+        elif command in ["-v", "-e"]:
             pass
 
         else:
@@ -186,14 +186,14 @@ class Main:
 
         if start < 0 or start > CHIP_SIZE - 1:
             if start_is_hex:
-                sys.stdout.write(f"<start> argument must be in range from 0x00 to 0x{CHIP_SIZE - 1:02X}!\n")
+                sys.stdout.write(f"<start> argument must be in range from 0x00 to 0x{CHIP_SIZE - 1:05X}!\n")
             else:
                 sys.stdout.write(f"<start> argument must be in range from 0 to {CHIP_SIZE - 1}!\n")
             exit()
 
         if size > CHIP_SIZE - start or size < 1:
             if start_is_hex:
-                sys.stdout.write(f"<size> argument must be in range from 0x01 to 0x{CHIP_SIZE - start:02X} (depending on the starting address)!\n")
+                sys.stdout.write(f"<size> argument must be in range from 0x01 to 0x{CHIP_SIZE - start:05X} (depending on the starting address)!\n")
             else:
                 sys.stdout.write(f"<size> argument must be in range from 1 to {CHIP_SIZE - start} (depending on the starting address)!\n")
             exit()
@@ -274,7 +274,7 @@ class Main:
             device_name = "Am29F400BT"
 
         elif device_id == 0xab:
-            device_name= "Am29F400BB"
+            device_name = "Am29F400BB"
 
         sys.stdout.write(f"Manufacturer ID: 0x{manufacturer_id:02X}\n")
         sys.stdout.write(f"Device ID: 0x{device_id:02X} ({device_name})\n\n")
@@ -296,9 +296,8 @@ class Main:
             address = int(address_int).to_bytes(4)
             cycle_chunk_size = min(CHUNK_SIZE, start + size - address_int)
 
+            sys.stdout.write(f"\rReading... 0x{address_int + 1 - start:05X}/0x{size:05X}")
             output_file.write(self.execute_command(0x02, address[0], address[1], address[2], address[3], cycle_chunk_size))
-
-            sys.stdout.write(f"\rReading... 0x{str(address_int + 1 - start):02X}/0x{size:02X}")
             time.sleep(0.05)
 
         output_file.close()
@@ -326,9 +325,8 @@ class Main:
             chunk = data[chunk_offset:chunk_offset + cycle_chunk_size]
             args.extend(chunk)
 
+            sys.stdout.write(f"\rWriting... 0x{address_int + 1 - start:05X}/0x{size:05X}")
             self.execute_command(0x04, *args)
-
-            sys.stdout.write(f"\rWriting... 0x{str(address_int + 1 - start):02X}/0x{size:02X}")
             time.sleep(0.05)
 
         sys.stdout.write("\rWriting... Done\n")
@@ -338,17 +336,18 @@ class Main:
 
         sectors = device_layout
         if sector is not None:
-            sectors = device_layout[sector]
+            sectors = [device_layout[sector]]
 
         for address_int in sectors:
+            address_int = address_int[0]
+
             address = int(address_int).to_bytes(4)
 
             if self.is_sector_protected(address_int):
-                found_protected_sectors = True
+               found_protected_sectors = True
 
+            sys.stdout.write(f"\rErasing... 0x{address_int:05X}")
             self.execute_command(0x03, address[0], address[1], address[2], address[3])
-
-            sys.stdout.write(f"\rErasing... 0x{str(address_int):02X}")
             time.sleep(0.05)
 
         sys.stdout.write("\rErasing... Done\n")
@@ -366,7 +365,7 @@ class Main:
 
         sys.stdout.write("Sector protection states:\n")
         for i, address in enumerate(sectors):
-            state = 'Protected' if self.is_sector_protected(address) else 'Unprotected'
+            state = 'Protected' if self.is_sector_protected(address[0]) else 'Unprotected'
             sys.stdout.write(f"SA{i}: {state}\n")
 
 

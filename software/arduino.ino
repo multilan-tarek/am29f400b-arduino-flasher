@@ -127,10 +127,10 @@ void erase_sector(uint32_t address) {
   write_byte(0xaa, 0xaaa);
   write_byte(0x55, 0x555);
   write_byte(0x30, address);
-  delayMicroseconds(10);
+  delayMicroseconds(1);
 
   while (is_busy()) {
-    delayMicroseconds(10);
+    delayMicroseconds(1);
   }
 
   Serial.write(0x03);  // Message Type
@@ -144,11 +144,11 @@ void write_data(uint32_t address, uint8_t size, uint8_t data[]) {
     write_byte(0xaa, 0xaaa);
     write_byte(0x55, 0x555);
     write_byte(0xa0, 0xaaa);
-    write_byte(data, address + i);
-    delayMicroseconds(10);
+    write_byte(data[i], address + i);
+    delayMicroseconds(100);
 
     while (is_busy()) {
-      delayMicroseconds(10);
+      delayMicroseconds(1);
     }
   }
 
@@ -201,7 +201,7 @@ void loop() {
 
       digitalWrite(RESET_PIN, HIGH);
       digitalWrite(WE_PIN, HIGH);
-      digitalWrite(OE_PIN, HIGH);
+      digitalWrite(OE_PIN, LOW);
       digitalWrite(CE_PIN, LOW);
 
       reset_chip();
@@ -231,6 +231,7 @@ void loop() {
     } else if (message_type == 0x05) {
       uint32_t address = ((uint32_t)(uint8_t)buffer[0] << 24) | ((uint32_t)(uint8_t)buffer[1] << 16) | ((uint32_t)(uint8_t)buffer[2] << 8) | ((uint32_t)(uint8_t)buffer[3]); 
       check_sector_protection(address);
+
     }
   }
 }
