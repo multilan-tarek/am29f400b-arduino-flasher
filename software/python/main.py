@@ -299,7 +299,6 @@ class Main:
 
             sys.stdout.write(f"\rReading... 0x{address_int + 1 - start:05X}/0x{size:05X}")
             output_file.write(self.execute_command(0x02, address[0], address[1], address[2], address[3], cycle_chunk_size))
-            time.sleep(0.05)
 
         output_file.close()
 
@@ -328,7 +327,6 @@ class Main:
 
             sys.stdout.write(f"\rWriting... 0x{address_int + 1 - start:05X}/0x{size:05X}")
             self.execute_command(0x04, *args)
-            time.sleep(0.05)
 
         sys.stdout.write("\rWriting... Done\n")
 
@@ -349,7 +347,6 @@ class Main:
 
             sys.stdout.write(f"\rErasing... 0x{address_int:05X}")
             self.execute_command(0x03, address[0], address[1], address[2], address[3])
-            time.sleep(0.05)
 
         sys.stdout.write("\rErasing... Done\n")
 
