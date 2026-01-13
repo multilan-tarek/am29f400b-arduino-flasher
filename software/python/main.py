@@ -1,6 +1,5 @@
 import os
 import sys
-import time
 import serial
 import serial.tools.list_ports
 
@@ -194,9 +193,11 @@ class Main:
 
         if size > CHIP_SIZE - start or size < 1:
             if start_is_hex:
-                sys.stdout.write(f"<size> argument must be in range from 0x01 to 0x{CHIP_SIZE - start:05X} (depending on the starting address)!\n")
+                sys.stdout.write(
+                    f"<size> argument must be in range from 0x01 to 0x{CHIP_SIZE - start:05X} (depending on the starting address)!\n")
             else:
-                sys.stdout.write(f"<size> argument must be in range from 1 to {CHIP_SIZE - start} (depending on the starting address)!\n")
+                sys.stdout.write(
+                    f"<size> argument must be in range from 1 to {CHIP_SIZE - start} (depending on the starting address)!\n")
             exit()
 
         return start, size
@@ -234,6 +235,9 @@ class Main:
         port = ports[int(port)].name
         sys.stdout.write("\n")
 
+        if os.name != "nt":
+            port = f"/dev/{port}"
+
         sys.stdout.write(f"Opening serial port '{port}'... ")
         ser = serial.Serial(port, baudrate=115200)
         sys.stdout.write("Success\n")
@@ -256,6 +260,26 @@ class Main:
         data = self.ser.read(message_length)
         return data
 
+    @staticmethod
+    def get_device_name(dev_id):
+        match dev_id:
+            case 0x23:
+                return "Am29F400BT"
+            case 0xab:
+                return "Am29F400BB"
+
+        return "Unknown"
+
+    @staticmethod
+    def get_manufacturer_name(manufacturer_id):
+        match manufacturer_id:
+            case 0x01:
+                return "AMD"
+            case 0x04:
+                return "Fujitsu"
+
+        return "Unknown"
+
     def read_ident(self):
         sys.stdout.write("Identifying... ")
         ident = self.execute_command(0x01)
@@ -269,20 +293,14 @@ class Main:
         manufacturer_id = ident[0]
         device_id = ident[1]
 
-        device_name = "Unknown"
+        device_name = self.get_device_name(device_id)
+        manufacturer_name = self.get_manufacturer_name(manufacturer_id)
 
-        if device_id == 0x23:
-            device_name = "Am29F400BT"
-
-        elif device_id == 0xab:
-            device_name = "Am29F400BB"
-
-        sys.stdout.write(f"Manufacturer ID: 0x{manufacturer_id:02X}\n")
+        sys.stdout.write(f"Manufacturer ID: 0x{manufacturer_id:02X} ({manufacturer_name})\n")
         sys.stdout.write(f"Device ID: 0x{device_id:02X} ({device_name})\n\n")
 
-        if manufacturer_id != 0x01:
-            sys.stdout.write("Expected 0x01 for manufacturer ID!\n")
-            exit()
+        if manufacturer_id not in [0x01, 0x04]:
+            sys.stdout.write("Expected 0x01 or 0x04 for manufacturer ID!\n")
 
         if device_id != 0x23 and device_id != 0xab:
             sys.stdout.write("Expected 0x23 or 0xAB for device ID!\n")
@@ -298,7 +316,8 @@ class Main:
             cycle_chunk_size = min(CHUNK_SIZE, start + size - address_int)
 
             sys.stdout.write(f"\rReading... 0x{address_int + 1 - start:05X}/0x{size:05X}")
-            output_file.write(self.execute_command(0x02, address[0], address[1], address[2], address[3], cycle_chunk_size))
+            output_file.write(
+                self.execute_command(0x02, address[0], address[1], address[2], address[3], cycle_chunk_size))
 
         output_file.close()
 
@@ -351,7 +370,8 @@ class Main:
         sys.stdout.write("\rErasing... Done\n")
 
         if found_protected_sectors:
-            sys.stdout.write("\nWarning:\nSome sectors are protected and cannot be modified.\nCheck protection states with '-v' command.\n")
+            sys.stdout.write(
+                "\nWarning:\nSome sectors are protected and cannot be modified.\nCheck protection states with '-v' command.\n")
 
     def is_sector_protected(self, sector_address):
         address = int(sector_address).to_bytes(4)
