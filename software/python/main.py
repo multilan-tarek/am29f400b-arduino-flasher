@@ -224,7 +224,7 @@ class Main:
 
         sys.stdout.write("Available serial ports:\n")
         for index, port in enumerate(ports):
-            sys.stdout.write(f"{index}: {port.description}\n")
+            sys.stdout.write(f"{index}: {port.name} ({port.description})\n")
 
         port = input("\nSelect serial port: ")
 
@@ -232,14 +232,11 @@ class Main:
             sys.stdout.write("Invalid serial port!\n")
             exit()
 
-        port = ports[int(port)].name
+        port = ports[int(port)]
         sys.stdout.write("\n")
 
-        if os.name != "nt":
-            port = f"/dev/{port}"
-
-        sys.stdout.write(f"Opening serial port '{port}'... ")
-        ser = serial.Serial(port, baudrate=115200)
+        sys.stdout.write(f"Opening serial port '{port.name}'... ")
+        ser = serial.Serial(port.device, baudrate=115200)
         sys.stdout.write("Success\n")
 
         return ser
